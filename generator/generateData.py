@@ -14,7 +14,6 @@ cities = [("Lima", "PE", -12.0464, -77.0428), ("Cusco", "PE", -13.5319, -71.9675
 def generar_log_linea():
     city, country, lat, lon = random.choice(cities)
     return (
-        f"{datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')} INFO "
         f"[transaction_id] txn_{random.randint(100000000, 999999999)} "
         f"[user_id] user_{random.randint(1000, 9999)} "
         f"[amount] {round(random.uniform(5.0, 1000.0), 2)} "
