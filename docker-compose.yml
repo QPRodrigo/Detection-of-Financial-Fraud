@@ -1,12 +1,15 @@
-version: '3.8'
-
 services:
+
+  generatordata:
+    build: .
+    volumes:
+      - ./generator:/app/generator
 
   filebeat:
     image: docker.elastic.co/beats/filebeat:7.17.0
     volumes:
       - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
-      - ./data:/logs:ro                     # Monta tu carpeta con el log
+      - ./generator/data:/logs:ro                     # Monta tu carpeta con el log
     command: ["--strict.perms=false"]
     user: root
     depends_on:
@@ -21,19 +24,19 @@ services:
     ports:
       - "5044:5044"
     depends_on:
-      - opensearch-node1
+      - opensearch-nodo1
     networks:
       - opensearch-net
 
-  opensearch-node1:
+  opensearch-nodo1:
     image: opensearchproject/opensearch:latest
-    container_name: opensearch-node1
+    container_name: opensearch-nodo1
     environment:
-      - node.name=opensearch-node1
+      - node.name=opensearch-nodo1
       - cluster.name=opensearch-cluster-original
-      - node.roles=cluster_manager,data
-      - discovery.seed_hosts=opensearch-node1,opensearch-node2,opensearch-node3
-      - cluster.initial_cluster_manager_nodes=opensearch-node1,opensearch-node2,opensearch-node3
+      - node.roles=cluster_manager
+      - discovery.seed_hosts=opensearch-nodo1,opensearch-nodo2,opensearch-nodo3
+      - cluster.initial_cluster_manager_nodes=opensearch-nodo1,opensearch-nodo2,opensearch-nodo3
       - bootstrap.memory_lock=true
       - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
       - OPENSEARCH_SECURITY_ADMIN_PASSWORD=Contrasena123456789$   # variable interna (opcional)
@@ -45,21 +48,21 @@ services:
         soft: -1
         hard: -1
     volumes:
-      - opensearch-node1-data:/usr/share/opensearch/data
+      - opensearch-nodo1-data:/usr/share/opensearch/data
     ports:
       - 9200:9200
     networks:
       - opensearch-net
 
-  opensearch-node2:
+  opensearch-nodo2:
     image: opensearchproject/opensearch:latest
-    container_name: opensearch-node2
+    container_name: opensearch-nodo2
     environment:
-      - node.name=opensearch-node2
+      - node.name=opensearch-nodo2
       - cluster.name=opensearch-cluster-original
       - node.roles=cluster_manager,data
-      - discovery.seed_hosts=opensearch-node1,opensearch-node2,opensearch-node3
-      - cluster.initial_cluster_manager_nodes=opensearch-node1,opensearch-node2,opensearch-node3
+      - discovery.seed_hosts=opensearch-nodo1,opensearch-nodo2,opensearch-nodo3
+      - cluster.initial_cluster_manager_nodes=opensearch-nodo1,opensearch-nodo2,opensearch-nodo3
       - bootstrap.memory_lock=true
       - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
       - OPENSEARCH_SECURITY_ADMIN_PASSWORD=Contrasena123456789$
@@ -71,19 +74,19 @@ services:
         soft: -1
         hard: -1
     volumes:
-      - opensearch-node2-data:/usr/share/opensearch/data
+      - opensearch-nodo2-data:/usr/share/opensearch/data
     networks:
       - opensearch-net
 
-  opensearch-node3:
+  opensearch-nodo3:
     image: opensearchproject/opensearch:latest
-    container_name: opensearch-node3
+    container_name: opensearch-nodo3
     environment:
-      - node.name=opensearch-node3
+      - node.name=opensearch-nodo3
       - cluster.name=opensearch-cluster-original
       - node.roles=cluster_manager,data
-      - discovery.seed_hosts=opensearch-node1,opensearch-node2,opensearch-node3
-      - cluster.initial_cluster_manager_nodes=opensearch-node1,opensearch-node2,opensearch-node3
+      - discovery.seed_hosts=opensearch-nodo1,opensearch-nodo2,opensearch-nodo3
+      - cluster.initial_cluster_manager_nodes=opensearch-nodo1,opensearch-nodo2,opensearch-nodo3
       - bootstrap.memory_lock=true
       - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
       - OPENSEARCH_SECURITY_ADMIN_PASSWORD=Contrasena123456789$
@@ -95,7 +98,7 @@ services:
         soft: -1
         hard: -1
     volumes:
-      - opensearch-node3-data:/usr/share/opensearch/data
+      - opensearch-nodo3-data:/usr/share/opensearch/data
     networks:
       - opensearch-net
 
@@ -105,21 +108,23 @@ services:
     ports:
       - 5601:5601
     environment:
-      - OPENSEARCH_HOSTS=["http://opensearch-node2:9200","http://opensearch-node3:9200"]
+      - OPENSEARCH_HOSTS=["http://opensearch-nodo2:9200","http://opensearch-nodo3:9200"]
       - OPENSEARCH_USERNAME=admin
       - OPENSEARCH_PASSWORD=Contrasena123456789$
       - SERVER_SSL_ENABLED=false          # para simplificar en local
       - OPENSEARCH_SSL_VERIFICATIONMODE=none
+    volumes:
+      - ./opensearch-dashboards/opensearch_dashboards.yml:/usr/share/opensearch-dashboards/config/opensearch_dashboards.yml:ro
     depends_on:
-      - opensearch-node2
-      - opensearch-node3
+      - opensearch-nodo2
+      - opensearch-nodo3
     networks:
       - opensearch-net
 
 volumes:
-  opensearch-node1-data:
-  opensearch-node2-data:
-  opensearch-node3-data:
+  opensearch-nodo1-data:
+  opensearch-nodo2-data:
+  opensearch-nodo3-data:
 
 networks:
   opensearch-net:
