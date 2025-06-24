@@ -4,27 +4,27 @@ import time
 from datetime import datetime
 
 # Datos simulados
-currencies = ["USD", "EUR", "PEN"]
+response_codes = ["00", "05", "12", "91", "96"]  # ISO8583 response codes
 institutions = ["BCP", "BBVA", "Interbank", "Scotiabank"]
 brands = ["Visa", "MasterCard", "Amex", "Diners"]
-transaction_types = ["purchase", "cash_withdrawal", "balance_inquiry"]
-response_codes = ["00", "05", "12", "91", "96"]  # ISO8583 response codes
-card_services = ["101", "201", "301", "421"]  # Código de servicio de tarjeta
+service_types = ["Tarjeta de Credito", "Tarjeta de Debito", "Tarjeta Prepago"]
+currencies = ["USD", "EUR", "PEN"]
+transaction_types = ["compra", "Retiro de Efectivo", "Consulta de Saldo"]
 
 # Función para generar una trama tipo ISO8583
 def generar_trama_iso8583():
     return (
         f"[timestamp] {datetime.utcnow().isoformat()} "
-        f"[mtid] 0200 "  # Message Type ID para solicitud financiera
         f"[transaction_id] txn_{random.randint(100000000, 999999999)} "
-        f"[user_id] user_{random.randint(1000, 9999)} "
-        f"[amount] {round(random.uniform(5.0, 1000.0), 2)} "
-        f"[currency] {random.choice(currencies)} "
+        f"[mtid] 0200 "  # Message Type ID para solicitud financiera
         f"[response_code] {random.choice(response_codes)} "
-        f"[card_service] {random.choice(card_services)} "
+        f"[service_types] {random.choice(service_types)} "
         f"[institution_id] {random.choice(institutions)} "
         f"[brand] {random.choice(brands)} "
         f"[transaction_type] {random.choice(transaction_types)} "
+        f"[user_id] user_{random.randint(1000, 9999)} "
+        f"[currency] {random.choice(currencies)} "
+        f"[amount] {round(random.uniform(5.0, 1000.0), 2)} "
         f"[response_time_ms] {random.randint(50, 500)}"
     )
 

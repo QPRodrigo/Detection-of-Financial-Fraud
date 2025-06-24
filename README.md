@@ -95,6 +95,10 @@ Esto construirá la imagen personalizada para el generador de logs (`generator`)
 docker-compose up
 ```
 
+```bash
+docker network create opensearch-net
+``` 
+
 Esto levantará todos los servicios definidos en `docker-compose.yml`.
 
 Puedes agregar `-d` para ejecutarlos en segundo plano:

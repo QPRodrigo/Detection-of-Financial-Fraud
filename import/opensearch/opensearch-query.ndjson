@@ -1,0 +1,181 @@
+PUT /_index_template/transactions-template
+{
+    "index_patterns": [
+        "transactions-*"
+    ],
+    "template": {
+        "settings": {
+            "index": {
+                "number_of_shards": "5",
+                "number_of_replicas": "1"
+            }
+        },
+        "mappings": {
+            "properties": {}
+        },
+        "aliases": {
+            "index-template": {}
+        }
+    },
+    "composed_of": [],
+    "priority": 1,
+    "_meta": {
+        "flow": "simple"
+    }
+}
+
+POST /umbral/_doc
+{
+  "tiempo_umbral": 480,
+  "@timestamp": "2025-06-23T16:30:00Z"
+}
+
+PUT /_index_template/transactions-template
+{
+  "index_patterns": [
+      "transactions-*"
+  ],
+  "template": {
+      "settings": {
+          "index": {
+              "number_of_shards": "5",
+              "number_of_replicas": "1"
+          }
+      },
+      "mappings": {
+          "properties": {}
+      },
+      "aliases": {
+          "index-template": {}
+      }
+  },
+  "composed_of": [],
+  "priority": 1,
+  "_meta": {
+      "flow": "simple"
+  }
+}
+
+POST /_plugins/_alerting/monitors
+{
+  "type": "monitor",
+  "schema_version": 0,
+  "name": "Alert Tiempo Respuesta",
+  "monitor_type": "query_level_monitor",
+  "enabled": true,
+  "enabled_time": 1750719697453,
+  "schedule": {
+    "period": {
+      "interval": 1,
+      "unit": "MINUTES"
+    }
+  },
+  "inputs": [
+    {
+      "search": {
+        "indices": ["transactions-*"],
+        "query": {
+          "size": 0,
+          "query": {
+            "range": {
+              "@timestamp": {
+                "from": "now-1m",
+                "to": "now",
+                "include_lower": true,
+                "include_upper": false,
+                "boost": 1
+              }
+            }
+          },
+          "aggregations": {
+            "tiempo_minuto": {
+              "filter": {
+                "range": {
+                  "@timestamp": {
+                    "from": "now-1m",
+                    "to": "now",
+                    "include_lower": true,
+                    "include_upper": false,
+                    "boost": 1
+                  }
+                }
+              },
+              "aggregations": {
+                "promedio_tiempo": {
+                  "avg": {
+                    "field": "response_time_ms"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "triggers": [
+    {
+      "query_level_trigger": {
+        "name": "Trigger - Tiempo de Respuesta",
+        "severity": "3",
+        "condition": {
+          "script": {
+            "source": "ctx.results[0].aggregations.tiempo_minuto.promedio_tiempo.value > 300",
+            "lang": "painless"
+          }
+        },
+        "actions": []
+      }
+    }
+  ]
+}
+
+POST /_plugins/_alerting/monitors
+{
+  "type": "monitor",
+  "schema_version": 0,
+  "name": "Alert Umbral",
+  "monitor_type": "query_level_monitor",
+  "enabled": true,
+  "enabled_time": 1750720842431,
+  "schedule": {
+    "period": {
+      "interval": 1,
+      "unit": "MINUTES"
+    }
+  },
+  "inputs": [
+    {
+      "search": {
+        "indices": [
+          "umbral"
+        ],
+        "query": {
+          "size": 1,
+          "sort": [
+            {
+              "@timestamp": {
+                "order": "desc"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "triggers": [
+    {
+      "query_level_trigger": {
+        "name": "Trigger - Umbral",
+        "severity": "1",
+        "condition": {
+          "script": {
+            "source": "ctx.results[0].hits.hits[0]._source.tiempo_umbral > 480",
+            "lang": "painless"
+          }
+        },
+        "actions": []
+      }
+    }
+  ]
+}
