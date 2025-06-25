@@ -1,59 +1,35 @@
 PUT /_index_template/transactions-template
 {
-    "index_patterns": [
-        "transactions-*"
-    ],
-    "template": {
-        "settings": {
-            "index": {
-                "number_of_shards": "5",
-                "number_of_replicas": "1"
-            }
-        },
-        "mappings": {
-            "properties": {}
-        },
-        "aliases": {
-            "index-template": {}
+  "index_patterns": ["transactions-*"],
+  "template": {
+    "settings": {
+        "index": {
+          "number_of_shards": "5",
+          "number_of_replicas": "1"
         }
     },
-    "composed_of": [],
-    "priority": 1,
-    "_meta": {
-        "flow": "simple"
-    }
-}
-
-POST /umbral/_doc
-{
-  "tiempo_umbral": 480,
-  "@timestamp": "2025-06-23T16:30:00Z"
-}
-
-PUT /_index_template/transactions-template
-{
-  "index_patterns": [
-      "transactions-*"
-  ],
-  "template": {
-      "settings": {
-          "index": {
-              "number_of_shards": "5",
-              "number_of_replicas": "1"
-          }
-      },
-      "mappings": {
-          "properties": {}
-      },
-      "aliases": {
-          "index-template": {}
+    "mappings": {
+      "properties": {
+        "geolocation": {
+          "type": "geo_point"
+        }
       }
+    },
+    "aliases": {
+      "index-template": {}
+    }
   },
   "composed_of": [],
   "priority": 1,
   "_meta": {
       "flow": "simple"
   }
+}
+
+POST /umbral/_doc
+{
+  "tiempo_umbral": 480,
+  "@timestamp": "2025-06-23T16:30:00Z"
 }
 
 POST /_plugins/_alerting/monitors
@@ -179,3 +155,52 @@ POST /_plugins/_alerting/monitors
     }
   ]
 }
+
+POST /_plugins/_alerting/monitors
+{
+  "type": "workflow",
+  "schema_version": 0,
+  "name": "Alert - Compuesta",
+  "workflow_type": "composite",
+  "enabled": true,
+  "enabled_time": 1750778390221,
+  "schedule": {
+    "period": {
+      "interval": 1,
+      "unit": "MINUTES"
+    }
+  },
+  "inputs": [
+    {
+      "composite_input": {
+        "sequence": {
+          "delegates": [
+            {
+              "order": 1,
+              "monitor_id": "sBSBopcBpvEJ-zkCHFiB"
+            },
+            {
+              "order": 2,
+              "monitor_id": "qRSBopcBpvEJ-zkCDlhh"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "triggers": [
+    {
+      "chained_alert_trigger": {
+        "name": "Trigger - Compuesta",
+        "severity": "1",
+        "condition": {
+          "script": {
+            "source": "(monitor[id=sBSBopcBpvEJ-zkCHFiB] && monitor[id=qRSBopcBpvEJ-zkCDlhh])",
+            "lang": "painless"
+          }
+        },
+        "actions": []
+      }
+    }
+  ]
+}    

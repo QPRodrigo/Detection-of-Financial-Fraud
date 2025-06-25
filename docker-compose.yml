@@ -113,8 +113,6 @@ services:
       - OPENSEARCH_PASSWORD=Contrasena123456789$
       - SERVER_SSL_ENABLED=false          # para simplificar en local
       - OPENSEARCH_SSL_VERIFICATIONMODE=none
-    volumes:
-      - ./opensearch-dashboards/opensearch_dashboards.yml:/usr/share/opensearch-dashboards/config/opensearch_dashboards.yml:ro
     depends_on:
       - opensearch-nodo2
       - opensearch-nodo3

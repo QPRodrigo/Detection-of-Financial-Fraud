@@ -3,13 +3,18 @@ import random
 import time
 from datetime import datetime
 
+LAT_MIN = -12.10
+LAT_MAX = -11.95
+LON_MIN = -77.15
+LON_MAX = -76.95
+
 # Datos simulados
-response_codes = ["00", "05", "12", "91", "96"]  # ISO8583 response codes
+response_codes = ["00", "05", "12", "91", "96", "80", "48"]  # ISO8583 response codes
 institutions = ["BCP", "BBVA", "Interbank", "Scotiabank"]
 brands = ["Visa", "MasterCard", "Amex", "Diners"]
 service_types = ["Tarjeta de Credito", "Tarjeta de Debito", "Tarjeta Prepago"]
 currencies = ["USD", "EUR", "PEN"]
-transaction_types = ["compra", "Retiro de Efectivo", "Consulta de Saldo"]
+transaction_types = ["Compra", "Retiro de Efectivo", "Consulta de Saldo"]
 
 # Función para generar una trama tipo ISO8583
 def generar_trama_iso8583():
@@ -25,7 +30,9 @@ def generar_trama_iso8583():
         f"[user_id] user_{random.randint(1000, 9999)} "
         f"[currency] {random.choice(currencies)} "
         f"[amount] {round(random.uniform(5.0, 1000.0), 2)} "
-        f"[response_time_ms] {random.randint(50, 500)}"
+        f"[response_time_ms] {random.randint(50, 500)} "
+        f"[lat] {round(random.uniform(LAT_MIN, LAT_MAX), 6)} "
+        f"[lon] {round(random.uniform(LON_MIN, LON_MAX), 6)}"
     )
 
 # Ruta de log
