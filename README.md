@@ -1,57 +1,80 @@
-# 📊 Dataset de Transacciones Financieras - Detección de Fraude
+# 📊 Dataset de Transacciones Financieras
 
-Este repositorio contiene un ejemplo de dataset simulado para detección de fraude en transacciones financieras, incluyendo una clasificación por categorías y una tabla funcional con tipos de datos y ejemplos.
-
----
-
-## 🔢 Campos de la Transacción
-
-### 📁 Categorías de cada campo
-
-| Campo               | Categoría         | Descripción                                  |
-|--------------------|-------------------|----------------------------------------------|
-| transaction_id     | Identificador     | ID único de la transacción                   |
-| timestamp          | Temporal          | Fecha y hora de la transacción               |
-| user_id            | Usuario           | ID del usuario que realiza la transacción    |
-| amount             | Financiero        | Monto de la transacción                      |
-| currency           | Financiero        | Tipo de moneda (ISO 4217)                    |
-| merchant_id        | Comercio          | ID del comercio donde se realiza la compra   |
-| merchant_category  | Comercio          | Categoría del comercio (por rubro)           |
-| payment_method     | Medio de pago     | Método utilizado para pagar                  |
-| channel            | Canal             | Canal por el que se realiza la operación     |
-| device_id          | Dispositivo       | ID del dispositivo desde el que se paga      |
-| location.lat       | Geolocalización   | Latitud de la transacción                    |
-| location.lon       | Geolocalización   | Longitud de la transacción                   |
-| location.city      | Geolocalización   | Ciudad                                       |
-| location.country   | Geolocalización   | País (ISO 3166-1 alpha-2)                    |
-
----
-
-## 📘 Campo - Tipo de Dato - Descripción Funcional - Ejemplos
-
-| Campo             | Tipo de dato       | Descripción funcional                                 | Ejemplos                        |
-|------------------|--------------------|--------------------------------------------------------|----------------------------------|
-| transaction_id   | string             | Identificador único de transacción                     | "txn_987654321"                 |
-| timestamp        | string (ISO 8601)  | Fecha y hora de la transacción                         | "2025-06-05T13:45:12Z"          |
-| user_id          | string             | ID del usuario que realiza la transacción              | "user_1024"                     |
-| amount           | float              | Monto total de la transacción                          | 824.75                          |
-| currency         | string (ISO)       | Código de moneda de la transacción                     | "USD"                           |
-| merchant_id      | string             | Identificador del comercio                             | "mrc_5487"                      |
-| merchant_category| string             | Categoría del comercio o rubro                         | "electronics"                   |
-| payment_method   | string             | Método de pago utilizado                               | "credit_card", "debit_card"     |
-| channel          | string             | Canal utilizado para la transacción                    | "mobile_app", "web", "ATM"      |
-| device_id        | string             | Identificador del dispositivo usado                    | "dev_2323abc"                   |
-| location.lat     | float              | Latitud desde donde se realizó la transacción          | -12.0464                        |
-| location.lon     | float              | Longitud desde donde se realizó la transacción         | -77.0428                        |
-| location.city    | string             | Ciudad donde ocurrió la transacción                    | "Lima"                          |
-| location.country | string (ISO)       | País de la transacción                                 | "PE"                            |
+Este repositorio contiene un dataset simulado de transacciones financieras, generado dinámicamente con Python. Los datos incluyen múltiples campos categóricos y métricas clave, listos para ser indexados y visualizados en tiempo real.
 
 ---
 
 ## 🚀 Objetivo del Proyecto
 
-Este dataset está diseñado para probar soluciones de analítica en tiempo real, como detección de fraude financiero utilizando tecnologías como Python, OpenSearch, Kafka o Spark Streaming.
+El objetivo principal es demostrar un flujo completo de generación, envío y visualización de datos financieros usando herramientas del ecosistema de observabilidad:
 
+- **Python**: para la generación continua de datos de ejemplo.
+- **Filebeat**: para la recolección y envío de logs simulados a OpenSearch.
+- **OpenSearch**: para el almacenamiento y análisis de los datos.
+- **OpenSearch Dashboards**: para la visualización de métricas clave a través de dashboards interactivos.
+
+Este entorno sirve como base para pruebas, aprendizaje o demostraciones relacionadas con procesamiento de logs, análisis de eventos financieros y monitoreo en tiempo real.
+
+---
+
+## 🧾 Formato de Trama ISO8583 Simulada
+
+Esta función genera una línea de datos que simula una transacción financiera en formato ISO8583, con los siguientes campos:
+
+| Campo               | Descripción                                                                 | Valores posibles / Ejemplo                             |
+|---------------------|------------------------------------------------------------------------------|--------------------------------------------------------|
+| `timestamp`         | Fecha y hora de la transacción (UTC)                                        | `2025-06-25T15:00:00.000Z`                             |
+| `transaction_id`    | ID único de la transacción                                                  | `txn_123456789`                                        |
+| `mtid`              | Message Type Identifier (tipo de mensaje ISO8583)                           | `0200` (solicitud financiera)                          |
+| `response_code`     | Código de respuesta ISO8583                                                 | `"00"` (aprobada), `"05"`, `"12"`, `"91"`, `"96"`, `"80"`, `"48"` |
+| `service_types`     | Tipo de tarjeta usada en la transacción                                     | `"Tarjeta de Credito"`, `"Tarjeta de Debito"`, `"Tarjeta Prepago"` |
+| `institution_id`    | Entidad financiera que procesa la transacción                               | `"BCP"`, `"BBVA"`, `"Interbank"`, `"Scotiabank"`       |
+| `brand`             | Marca de la tarjeta                                                         | `"Visa"`, `"MasterCard"`, `"Amex"`, `"Diners"`         |
+| `transaction_type`  | Tipo de operación realizada                                                 | `"Compra"`, `"Retiro de Efectivo"`, `"Consulta de Saldo"` |
+| `user_id`           | Identificador del usuario                                                   | `user_1234` (valor aleatorio entre 1000 y 9999)        |
+| `currency`          | Moneda de la transacción                                                    | `"USD"`, `"EUR"`, `"PEN"`                              |
+| `amount`            | Monto de la transacción (en la moneda indicada)                             | Número decimal entre `5.00` y `1000.00`                |
+| `response_time_ms`  | Tiempo de respuesta del sistema en milisegundos                             | Número entero entre `50` y `500`                       |
+| `lat`               | Latitud simulada para la ubicación de la transacción                        | Entre `-12.10` y `-11.95`                              |
+| `lon`               | Longitud simulada para la ubicación de la transacción                       | Entre `-77.15` y `-76.95`                              |
+
+### 🧪 Ejemplo de salida:
+
+```bash
+[timestamp] 2025-06-25T15:30:00.123456 [transaction_id] txn_834927561 [mtid] 0200 [response_code] 00 [service_types] Tarjeta de Credito [institution_id] BBVA [brand] Visa [transaction_type] Compra [user_id] user_3021 [currency] PEN [amount] 252.75 [response_time_ms] 178 [lat] -12.035217 [lon] -77.042838
+```
+
+---
+
+
+## 🚀 Explicacion del Dashboard "(Demo) Transacciones"
+
+### 🖼️ Vista general del panel
+
+![Vista general del dashboard](./img/Dashboard-Demo-01.png)
+![Vista general del dashboard](./img/Dashboard-Demo-02.png)
+![Vista general del dashboard](./img/Dashboard-Demo-03.png)
+
+### 📈 Funcionalidades del Dashboard
+
+- Filtros por **Tiempo de Respuesta**, **Tipo de Servicio** y **Marca**  
+- Cantidad y porcentaje de cada **Código de Respuesta**  
+- Evolución de la cantidad de **Códigos de Respuesta** a lo largo del tiempo  
+- Promedio general del **Tiempo de Respuesta**  
+- Valores **máximo**, **promedio** y **mínimo** del **Tiempo de Respuesta** por periodo  
+- Distribución de **Códigos de Respuesta** por **Marca**  
+- Cantidad de transacciones y promedio del **Tiempo de Respuesta** en el tiempo  
+- Distribución de cada **Marca** según el tiempo transcurrido  
+- Visualización de **geolocalización** de las transacciones  
+- **Mapa de calor** de **Marca** por **Tipo de Servicio**  
+- **Log** detallado de todas las transacciones
+
+### ⚙️ Tecnologías utilizadas
+
+- OpenSearch Dashboards 
+- OpenSearch Alerting
+- Logstash / Beats
+- Index Patterns personalizados
 ---
 
 # 🐳 Proyecto con Docker Compose: OpenSearch + Dashboards + Filebeat + Logstash
@@ -64,64 +87,6 @@ Este proyecto contiene una arquitectura básica usando Docker Compose para levan
 - OpenSearch
 - OpenSearch Dashboards
 
----
-
-## 🚀 Instrucciones de uso
-
-### 1. Clona el repositorio y ubícate en la raíz del proyecto
-
-```bash
-git clone https://github.com/tuusuario/tu-proyecto.git
-cd tu-proyecto
-```
-
----
-
-### 2. 🛠️ Construye los contenedores
-
-Desde la raíz del proyecto, ejecuta:
-
-```bash
-docker-compose build
-```
-
-Esto construirá la imagen personalizada para el generador de logs (`generator`), y descargará las demás imágenes necesarias.
-
----
-
-### 3. ▶️ Ejecuta todos los contenedores
-
-```bash
-docker-compose up
-```
-
-```bash
-docker network create opensearch-net
-``` 
-
-Esto levantará todos los servicios definidos en `docker-compose.yml`.
-
-Puedes agregar `-d` para ejecutarlos en segundo plano:
-
-```bash
-docker-compose up -d
-```
-
----
-
-## 🧪 Verifica
-
-- Abre OpenSearch Dashboards en: [http://localhost:5601](http://localhost:5601)
-- Verifica que el archivo `generator/data/output.txt` se haya generado correctamente
-- Filebeat leerá ese archivo, y Logstash lo enviará a OpenSearch
-
----
-
-## 🛑 Detener los contenedores
-
-```bash
-docker-compose down
-```
 
 ---
 
@@ -144,12 +109,74 @@ docker-compose down
 │       └── transactions.log
 ├── filebeat/
 │   └── filebeat.yml
-├── logstash/
+└── logstash/
 │   └── pipeline/
 │       └── logstash.conf
-└── opensearch-dashboards/
-    └── opensearch_dashboards.yml
+└── import/
+    ├── opensearch/
+    │   └── opensearch-query.conf
+    └── opensearch-dashboard/
+        └── dashboard-query.conf
 ```
+
+---
+
+
+## 🚀 Instrucciones de uso
+
+### 1. 📁 Clona el repositorio y ubícate en la raíz del proyecto
+
+```bash
+git clone https://github.com/QPRodrigo/MonitoreoOpensearch.git
+cd MonitoreoOpensearch
+```
+
+---
+
+### 2. 🛠️ Construye los contenedores
+
+Desde la raíz del proyecto, ejecuta el siguiente comando para construir la imagen personalizada del generador de logs (`generator`) y descargar las demás imágenes necesarias:
+
+```bash
+docker-compose build
+```
+---
+
+### 3. 🌐 Crear la red de los contenedores
+
+Crea la red Docker que será compartida por los servicios:
+
+```bash
+docker network create opensearch-net
+``` 
+### 4. ▶️ Levantar los contenedores
+
+Inicia todos los servicios definidos en el archivo `docker-compose.yml`:
+
+```bash
+docker-compose up
+```
+Para ejecutarlos en segundo plano (modo detached), agrega el parámetro `-d`:
+
+```bash
+docker-compose up -d
+```
+
+---
+
+## 🛑 Detener los contenedores
+
+```bash
+docker-compose down
+```
+
+---
+
+## 🧪 Verifica
+
+- Abre OpenSearch Dashboards en: [http://localhost:5601](http://localhost:5601)
+- Verifica que el archivo `generator/data/transactions.log` se haya generado correctamente
+- Filebeat leerá ese archivo, y Logstash lo enviará a OpenSearch
 
 ---
 

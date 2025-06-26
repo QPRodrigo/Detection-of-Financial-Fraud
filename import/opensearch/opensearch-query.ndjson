@@ -32,6 +32,11 @@ POST /umbral/_doc
   "@timestamp": "2025-06-23T16:30:00Z"
 }
 
+GET /_plugins/_alerting/monitors/_search
+{
+  "size": 3,
+}
+
 POST /_plugins/_alerting/monitors
 {
   "type": "monitor",
