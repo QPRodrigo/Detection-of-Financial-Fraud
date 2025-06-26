@@ -17,6 +17,35 @@ Este entorno sirve como base para pruebas, aprendizaje o demostraciones relacion
 
 ---
 
+## 🚀 Explicacion del Dashboard "(Demo) Transacciones"
+
+### 🖼️ Vista general del panel
+
+![Vista general del dashboard](./img/Dashboard-Demo.jpeg)
+
+### 📈 Funcionalidades del Dashboard
+
+- Filtros por **Tiempo de Respuesta**, **Tipo de Servicio** y **Marca**  
+- Cantidad y porcentaje de cada **Código de Respuesta**  
+- Evolución de la cantidad de **Códigos de Respuesta** a lo largo del tiempo  
+- Promedio general del **Tiempo de Respuesta**  
+- Valores **máximo**, **promedio** y **mínimo** del **Tiempo de Respuesta** por periodo  
+- Distribución de **Códigos de Respuesta** por **Marca**  
+- Cantidad de transacciones y promedio del **Tiempo de Respuesta** en el tiempo  
+- Distribución de cada **Marca** según el tiempo transcurrido  
+- Visualización de **geolocalización** de las transacciones  
+- **Mapa de calor** de **Marca** por **Tipo de Servicio**  
+- **Log** detallado de todas las transacciones
+
+### ⚙️ Tecnologías utilizadas
+
+- OpenSearch Dashboards 
+- OpenSearch Alerting
+- Logstash / Beats
+- Index Patterns personalizados
+
+---
+
 ## 🧾 Formato de Trama ISO8583 Simulada
 
 Esta función genera una línea de datos que simula una transacción financiera en formato ISO8583, con los siguientes campos:
@@ -44,37 +73,6 @@ Esta función genera una línea de datos que simula una transacción financiera 
 [timestamp] 2025-06-25T15:30:00.123456 [transaction_id] txn_834927561 [mtid] 0200 [response_code] 00 [service_types] Tarjeta de Credito [institution_id] BBVA [brand] Visa [transaction_type] Compra [user_id] user_3021 [currency] PEN [amount] 252.75 [response_time_ms] 178 [lat] -12.035217 [lon] -77.042838
 ```
 
----
-
-
-## 🚀 Explicacion del Dashboard "(Demo) Transacciones"
-
-### 🖼️ Vista general del panel
-
-![Vista general del dashboard](./img/Dashboard-Demo-01.png)
-![Vista general del dashboard](./img/Dashboard-Demo-02.png)
-![Vista general del dashboard](./img/Dashboard-Demo-03.png)
-
-### 📈 Funcionalidades del Dashboard
-
-- Filtros por **Tiempo de Respuesta**, **Tipo de Servicio** y **Marca**  
-- Cantidad y porcentaje de cada **Código de Respuesta**  
-- Evolución de la cantidad de **Códigos de Respuesta** a lo largo del tiempo  
-- Promedio general del **Tiempo de Respuesta**  
-- Valores **máximo**, **promedio** y **mínimo** del **Tiempo de Respuesta** por periodo  
-- Distribución de **Códigos de Respuesta** por **Marca**  
-- Cantidad de transacciones y promedio del **Tiempo de Respuesta** en el tiempo  
-- Distribución de cada **Marca** según el tiempo transcurrido  
-- Visualización de **geolocalización** de las transacciones  
-- **Mapa de calor** de **Marca** por **Tipo de Servicio**  
-- **Log** detallado de todas las transacciones
-
-### ⚙️ Tecnologías utilizadas
-
-- OpenSearch Dashboards 
-- OpenSearch Alerting
-- Logstash / Beats
-- Index Patterns personalizados
 ---
 
 # 🐳 Proyecto con Docker Compose: OpenSearch + Dashboards + Filebeat + Logstash
